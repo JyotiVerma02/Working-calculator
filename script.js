@@ -51,12 +51,26 @@ document.addEventListener("DOMContentLoaded", function () {
 		{ name: "acos", symbol: "acos", formula: "inv_trigo(Math.acos,", type: "trigo_function" },
 		{ name: "asin", symbol: "asin", formula: "inv_trigo(Math.asin,", type: "trigo_function" },
 		{ name: "atan", symbol: "atan", formula: "inv_trigo(Math.atan,", type: "trigo_function" },
-		{ name: "power", symbol: "x<span>y</span>", formula: POWER, type: "math_function" },
-		{ name: "e", symbol: "e", formula: "Math.E", type: "number" },
+
+
+		{ name: "[", symbol: "[", formula: "Math.[", type: "math_function" },
+		{ name: "]", symbol: "]", formula: "Math.]", type: "math_function" },
+		{ name: "{", symbol: "{", formula: "Math.{", type: "math_function" },
+		{ name: "}", symbol: "}", formula: "Math.}", type: "math_function" },
 		{ name: "open-parenthesis", symbol: "(", formula: "(", type: "number" },
 		{ name: "close-parenthesis", symbol: ")", formula: ")", type: "number" },
+		{ name: "power", symbol: "x<span>y</span>", formula: POWER, type: "math_function" },
+		{ name: "e", symbol: "e", formula: "Math.E", type: "number" },
+
+		{ name: "ceil", symbol: "⌈x⌉", formula: "Math.ceil", type: "math_function" },
+		{ name: "floor", symbol: "⌊x⌋", formula: "Math.floor", type: "math_function" },
 		{ name: "exp", symbol: "exp", formula: "Math.exp", type: "math_function" },
 		{ name: "ANS", symbol: "ANS", formula: "ans", type: "number" },
+
+
+
+
+
 		{ name: "7", symbol: 7, formula: 7, type: "number" },
 		{ name: "8", symbol: 8, formula: 8, type: "number" },
 		{ name: "9", symbol: 9, formula: 9, type: "number" },
