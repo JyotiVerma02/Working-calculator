@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	const numericButtonsContainer = document.getElementById("numeric-buttons");
 
 	const outputOperationElement = document.querySelector(".operation .value");
+	outputOperationElement.innerHTML = "0"; // Initialize with 0
 	const outputResultElement = document.querySelector(".result .value");
 
 	// Mode Switching
@@ -97,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				["rad", "deg", "ANS", "e", "pi", "open-parenthesis", "close-parenthesis", "exp"].includes(button.name);
 
 			if (isScientific) {
-				buttonEl.classList.add("advance-key"); 
+				buttonEl.classList.add("advance-key");
 				scientificButtonsContainer.appendChild(buttonEl);
 			} else {
 				numericButtonsContainer.appendChild(buttonEl);
@@ -139,16 +140,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		disableAdvanceKey();
 	}
 
-function disableAdvanceKey() {
-	const buttons = document.querySelectorAll(".advance-key"); // ✅ Correct selector
-	buttons.forEach(btn => {
-		btn.disabled = !SCIENTIFIC_MODE;
-	});
-	data.operation = [];
-	data.formula = [];
-	updateOutputOperation("");
-	updateOutputResult(0);
-}
+	function disableAdvanceKey() {
+		const buttons = document.querySelectorAll(".advance-key"); // ✅ Correct selector
+		buttons.forEach(btn => {
+			btn.disabled = !SCIENTIFIC_MODE;
+		});
+		data.operation = [];
+		data.formula = [];
+		updateOutputOperation();
+		updateOutputResult();
+	}
 
 
 	[numericButtonsContainer, scientificButtonsContainer].forEach(container => {
@@ -162,7 +163,59 @@ function disableAdvanceKey() {
 		});
 	});
 
+	// function calculator(button) {
+	// 	if (button.type === "number" || button.type === "operator") {
+
+	// 		data.operation.push(button.symbol);
+	// 		data.formula.push(button.formula);
+	// 	}
+
+
+	// 	else if (button.type === "trigo_function") {
+	// 		data.operation.push(button.symbol + "(");
+	// 		data.formula.push(button.formula);
+	// 	} else if (button.type === "math_function") {
+	// 		handleMathFunction(button);
+	// 	} else if (button.type === "key") {
+	// 		handleSpecialKey(button);
+	// 	} else if (button.type === "calculate") {
+	// 		evaluateExpression();
+	// 	}
+	// 	updateOutputOperation(data.operation.join(""));
+	// }
+
 	function calculator(button) {
+		const lastFormulaItem = data.formula[data.formula.length - 1];
+
+		// Determine if we need to insert implicit multiplication
+
+		const isImplicitMultiplicationNeeded =
+			lastFormulaItem &&
+			(
+				lastFormulaItem === "Math.PI" ||
+				lastFormulaItem === "Math.E" ||
+				lastFormulaItem === "ans" ||
+				lastFormulaItem === ")" ||
+				button.name === "open-parenthesis" ||
+				button.type === "math_function" ||
+				button.type === "trigo_function"
+			) &&
+			(
+				button.name === "open-parenthesis" ||
+				button.type === "math_function" ||
+				button.type === "trigo_function" ||
+				button.name === "pi" ||
+				button.name === "e" ||
+				button.name === "ANS"
+			);
+
+		// ✅ Insert multiplication if needed
+		if (isImplicitMultiplicationNeeded) {
+			data.operation.push("×");
+			data.formula.push("*");
+		}
+
+		// Add actual button value
 		if (button.type === "number" || button.type === "operator") {
 			data.operation.push(button.symbol);
 			data.formula.push(button.formula);
@@ -176,8 +229,13 @@ function disableAdvanceKey() {
 		} else if (button.type === "calculate") {
 			evaluateExpression();
 		}
+
 		updateOutputOperation(data.operation.join(""));
 	}
+
+
+
+
 
 	function handleMathFunction(button) {
 		if (button.name === "factorial") {
@@ -206,12 +264,92 @@ function disableAdvanceKey() {
 		}
 	}
 
+	// function showPowerOnUi(data, formula, num) {
+	// 	data.operation.push("^(");
+	// 	data.formula.push(formula);
+	// 	data.operation.push(num);
+	// 	data.formula.push(num);
+	// }
+
+	// function showPowerOnUi(data, formula, num) {
+	// 	// Just push POWER to formula, but don’t mix up *
+	// 	data.operation.push("^(");
+	// 	data.formula.push(POWER);
+	// 	data.operation.push(num);
+	// 	data.formula.push(num);
+	// }
+
 	function showPowerOnUi(data, formula, num) {
-		data.operation.push("^(");
-		data.formula.push(formula);
-		data.operation.push(num);
-		data.formula.push(num);
+		const baseOperation = [];
+		const baseFormula = [];
+		let i = data.formula.length - 1;
+		let count = 0;
+
+		// Collect the base
+		while (i >= 0) {
+			const token = data.formula[i];
+			if (token === ")") count++;
+			if (token === "(") count--;
+			if (count < 0 || (OPERATIONS.includes(token) && count === 0) || token === POWER) break;
+
+			baseOperation.unshift(data.operation[i]);
+			baseFormula.unshift(data.formula[i]);
+
+			data.operation.pop();
+			data.formula.pop();
+			i--;
+		}
+
+		const baseOpStr = baseOperation.join("");
+		const baseFormulaStr = baseFormula.join("");
+
+		// Final power display (for operation only)
+		data.operation.push(baseOpStr + "^(" + num + ")");
+
+		// Final formula to evaluate
+		data.formula.push(`Math.pow(${baseFormulaStr},${num})`);
 	}
+
+
+	// function evaluateExpression() {
+	// 	let formulaStr = data.formula.join("");
+	// 	const powerResults = search(data.formula, POWER);
+	// 	const factorialResults = search(data.formula, FACTORIAL);
+
+	// 	const bases = powerBaseGetter(data.formula, powerResults);
+	// 	bases.forEach(base => {
+	// 		formulaStr = formulaStr.replace(base + POWER, `Math.pow(${base},`);
+	// 	});
+
+	// 	const factNumbers = factorialNumGetter(data.formula, factorialResults);
+	// 	factNumbers.forEach(obj => {
+	// 		formulaStr = formulaStr.replace(obj.toReplace, obj.replacement);
+	// 	});
+
+	// 	try {
+	// 		// let result = eval(formulaStr);
+	// 		// ans = result;
+	// 		// data.operation = [result];
+	// 		// data.formula = [result];
+	// 		// updateOutputResult(result);
+
+	// 		let result = eval(formulaStr);
+	// 		ans = result;
+
+
+	// 		updateOutputResult(result);
+
+
+	// 		data.operation = [];
+	// 		data.formula = [];
+	// 	} catch {
+	// 		updateOutputResult("Syntax Error!");
+	// 	}
+	// }
+
+
+
+
 
 	function evaluateExpression() {
 		let formulaStr = data.formula.join("");
@@ -220,6 +358,7 @@ function disableAdvanceKey() {
 
 		const bases = powerBaseGetter(data.formula, powerResults);
 		bases.forEach(base => {
+			if (base.endsWith("*")) base = base.slice(0, -1);
 			formulaStr = formulaStr.replace(base + POWER, `Math.pow(${base},`);
 		});
 
@@ -229,15 +368,24 @@ function disableAdvanceKey() {
 		});
 
 		try {
+			const currentOperation = data.operation.join("");
 			let result = eval(formulaStr);
+			if (isNaN(result) || !isFinite(result)) {
+				updateOutputResult("Error");
+				return;
+			}
 			ans = result;
-			data.operation = [result];
-			data.formula = [result];
-			updateOutputResult(result);
+			updateOutputOperation(currentOperation);
+			updateOutputResult("= " + result);
+
+			// Retain result for further calculations
+			data.operation = [];
+			data.formula = [];
 		} catch {
 			updateOutputResult("Syntax Error!");
 		}
 	}
+
 
 	function powerBaseGetter(formula, indexes) {
 		return indexes.map(index => {
@@ -292,22 +440,46 @@ function disableAdvanceKey() {
 		if (!RADIAN) angle = angle * Math.PI / 180;
 		return fn(angle);
 	}
-	function inv_trigo(fn, value) {
-		if (["acos", "asin"].includes(fn.name) && (value < -1 || value > 1)) {
-			alert("Input out of range (-1 to 1)");
+	// function inv_trigo(fn, value) {
+	// 	if (["acos", "asin"].includes(fn.name) && (value < -1 || value > 1)) {
+	// 		alert("Input out of range (-1 to 1)");
+	// 		return NaN;
+	// 	}
+	// 	let angle = fn(value);
+	// 	if (!RADIAN) angle = angle * 180 / Math.PI;
+	// 	return angle;
+	// }
+
+
+
+	// function factorial(n) {
+	// 	if (n % 1 !== 0) return gamma(n + 1);
+	// 	if (n === 0 || n === 1) return 1;
+	// 	let res = 1;
+	// 	for (let i = n; i > 0; i--) {
+	// 		res *= i;
+	// 		if (res === Infinity) return Infinity;
+	// 	}
+	// 	return res;
+	// }
+
+	function factorial(n) {
+		if (n < 0) {
+			alert("Factorial is undefined for negative numbers");
 			return NaN;
 		}
-		let angle = fn(value);
-		if (!RADIAN) angle = angle * 180 / Math.PI;
-		return angle;
-	}
-	function factorial(n) {
-		if (n % 1 !== 0) return gamma(n + 1);
+		if (n % 1 !== 0) {
+			alert("Factorial is only defined for non-negative integers");
+			return NaN;
+		}
 		if (n === 0 || n === 1) return 1;
 		let res = 1;
-		for (let i = n; i > 0; i--) {
+		for (let i = 2; i <= n; i++) {
 			res *= i;
-			if (res === Infinity) return Infinity;
+			if (res === Infinity) {
+				alert("Factorial result is too large");
+				return Infinity;
+			}
 		}
 		return res;
 	}
