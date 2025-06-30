@@ -3,9 +3,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	const scientificButtonsContainer = document.getElementById("scientific-buttons");
 	const numericButtonsContainer = document.getElementById("numeric-buttons");
 
-	const outputOperationElement = document.querySelector(".operation .value");
+	const outputOperationElement = document.querySelector(".operation");
 	outputOperationElement.innerHTML = "0"; // Initialize with 0
-	const outputResultElement = document.querySelector(".result .value");
+	const outputResultElement = document.querySelector(".result");
 
 	// Mode Switching
 	let SCIENTIFIC_MODE = true;
