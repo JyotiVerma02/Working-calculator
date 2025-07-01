@@ -154,16 +154,28 @@ document.addEventListener("DOMContentLoaded", function () {
 		disableAdvanceKey();
 	}
 
-	function disableAdvanceKey() {
-		const buttons = document.querySelectorAll(".advance-key"); // ✅ Correct selector
-		buttons.forEach(btn => {
-			btn.disabled = !SCIENTIFIC_MODE;
-		});
-		data.operation = [];
-		data.formula = [];
-		updateOutputOperation();
-		updateOutputResult();
-	}
+	// function disableAdvanceKey() {
+	// 	const buttons = document.querySelectorAll(".advance-key"); 
+	// 	buttons.forEach(btn => {
+	// 		btn.disabled = !SCIENTIFIC_MODE;
+	// 	});
+	// 	data.operation = [];
+	// 	data.formula = [];
+	// 	updateOutputOperation();
+	// 	updateOutputResult();
+	// }
+function disableAdvanceKey() {
+	const buttons = document.querySelectorAll(".advance-key"); 
+	buttons.forEach(btn => {
+		btn.disabled = !SCIENTIFIC_MODE;
+	});
+
+	data.operation = [];
+	data.formula = [];
+
+	updateOutputOperation("0"); // Reset to 0 instead of undefined
+	updateOutputResult("0");     // Clear result field
+}
 
 
 	[numericButtonsContainer, scientificButtonsContainer].forEach(container => {
