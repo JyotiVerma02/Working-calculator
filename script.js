@@ -68,11 +68,6 @@ document.addEventListener("DOMContentLoaded", function () {
 		{ name: "floor", symbol: "⌊x⌋", formula: "Math.floor", type: "math_function" },
 		{ name: "exp", symbol: "exp", formula: "Math.exp", type: "math_function" },
 		{ name: "ANS", symbol: "ANS", formula: "ans", type: "number" },
-
-
-
-
-
 		{ name: "7", symbol: 7, formula: 7, type: "number" },
 		{ name: "8", symbol: 8, formula: 8, type: "number" },
 		{ name: "9", symbol: 9, formula: 9, type: "number" },
@@ -263,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
 			handleMathFunction(button);
 		} else if (button.type === "key") {
 			handleSpecialKey(button);
-				if (button.name === "clear") return;
+			if (button.name === "clear") return;
 		} else if (button.type === "calculate") {
 			evaluateExpression();
 		}
