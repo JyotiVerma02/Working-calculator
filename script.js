@@ -166,18 +166,23 @@ document.addEventListener("DOMContentLoaded", function () {
 	// 	updateOutputOperation();
 	// 	updateOutputResult();
 	// }
-function disableAdvanceKey() {
-	const buttons = document.querySelectorAll(".advance-key"); 
-	buttons.forEach(btn => {
-		btn.disabled = !SCIENTIFIC_MODE;
-	});
+	function disableAdvanceKey() {
+		const buttons = document.querySelectorAll(".advance-key");
+		buttons.forEach(btn => {
+			btn.disabled = !SCIENTIFIC_MODE;
+		});
 
-	data.operation = [];
-	data.formula = [];
+		data.operation = [];
+		data.formula = [];
 
-	updateOutputOperation("0"); // Reset to 0 instead of undefined
-	updateOutputResult("0");     // Clear result field
-}
+		updateOutputOperation("0"); // Reset to 0 instead of undefined
+		updateOutputResult("0");     // Clear result field
+	}
+
+
+
+
+
 
 
 	[numericButtonsContainer, scientificButtonsContainer].forEach(container => {
@@ -258,6 +263,7 @@ function disableAdvanceKey() {
 			handleMathFunction(button);
 		} else if (button.type === "key") {
 			handleSpecialKey(button);
+				if (button.name === "clear") return;
 		} else if (button.type === "calculate") {
 			evaluateExpression();
 		}
@@ -282,12 +288,17 @@ function disableAdvanceKey() {
 		}
 	}
 
+
+
 	function handleSpecialKey(button) {
 		switch (button.name) {
 			case "clear":
 				data.operation = [];
 				data.formula = [];
-				updateOutputResult(0);
+				updateOutputOperation("0");
+				updateOutputResult("0");
+
+
 				break;
 			case "delete":
 				data.operation.pop();
@@ -461,11 +472,14 @@ function disableAdvanceKey() {
 		return arr.map((item, i) => (item === keyword ? i : -1)).filter(i => i !== -1);
 	}
 
-	function updateOutputOperation(str) {
+	function updateOutputOperation(str = "0") {
 		outputOperationElement.innerHTML = str;
+		console.log('String : ', str);
 	}
-	function updateOutputResult(result) {
+	function updateOutputResult(result = "0") {
 		outputResultElement.innerHTML = result;
+		console.log('Result : ', result);
+
 	}
 
 	function trigo(fn, angle) {
@@ -484,16 +498,8 @@ function disableAdvanceKey() {
 
 
 
-	// function factorial(n) {
-	// 	if (n % 1 !== 0) return gamma(n + 1);
-	// 	if (n === 0 || n === 1) return 1;
-	// 	let res = 1;
-	// 	for (let i = n; i > 0; i--) {
-	// 		res *= i;
-	// 		if (res === Infinity) return Infinity;
-	// 	}
-	// 	return res;
-	// }
+
+
 
 	function factorial(n) {
 		if (n < 0) {
