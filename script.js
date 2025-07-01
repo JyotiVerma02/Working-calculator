@@ -4,8 +4,10 @@ document.addEventListener("DOMContentLoaded", function () {
 	const numericButtonsContainer = document.getElementById("numeric-buttons");
 
 	const outputOperationElement = document.querySelector(".operation");
-	outputOperationElement.innerHTML = "0"; // Initialize with 0
+	// outputOperationElement.innerHTML = "0"; // Initialize with 0
 	const outputResultElement = document.querySelector(".result");
+	// outputResultElement.innerHTML = "0"; // Initialize with 0
+
 
 	// Mode Switching
 	let SCIENTIFIC_MODE = true;
@@ -211,6 +213,10 @@ function disableAdvanceKey() {
 	// }
 
 	function calculator(button) {
+		// If starting a new expression after evaluation, clear operation
+		// if (data.formula.length === 0 && button.type !== "calculate" && button.type !== "key") {
+		// 	data.operation = [];
+		// }
 		const lastFormulaItem = data.formula[data.formula.length - 1];
 
 		// Determine if we need to insert implicit multiplication
@@ -405,7 +411,7 @@ function disableAdvanceKey() {
 			updateOutputResult("= " + result);
 
 			// Retain result for further calculations
-			data.operation = [];
+			// data.operation = [];
 			data.formula = [];
 		} catch {
 			updateOutputResult("Syntax Error!");
