@@ -55,12 +55,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		{ name: "atan", symbol: "atan", formula: "inv_trigo(Math.atan,", type: "trigo_function" },
 
 
-		{ name: "[", symbol: "[", formula: "Math.[", type: "math_function" },
-		{ name: "]", symbol: "]", formula: "Math.]", type: "math_function" },
-		{ name: "{", symbol: "{", formula: "Math.{", type: "math_function" },
-		{ name: "}", symbol: "}", formula: "Math.}", type: "math_function" },
-		{ name: "open-parenthesis", symbol: "(", formula: "(", type: "number" },
-		{ name: "close-parenthesis", symbol: ")", formula: ")", type: "number" },
+		{ name: "open-square-bracket", symbol: "[", formula: "[", type: "bracket" },
+		{ name: "close-square-bracket", symbol: "]", formula: "]", type: "bracket" },
+		{ name: "open-curly-braces", symbol: "{", formula: "{", type: "bracket" },
+		{ name: "close-curly-braces", symbol: "}", formula: "}", type: "bracket" },
+		{ name: "open-parenthesis", symbol: "(", formula: "(", type: "bracket" },
+		{ name: "close-parenthesis", symbol: ")", formula: ")", type: "bracket" },
 		{ name: "power", symbol: "x<span>y</span>", formula: POWER, type: "math_function" },
 		{ name: "e", symbol: "e", formula: "Math.E", type: "number" },
 
@@ -111,7 +111,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			const isScientific =
 				button.type === "math_function" ||
 				button.type === "trigo_function" ||
-				["rad", "deg", "ANS", "e", "pi", "open-parenthesis", "close-parenthesis", "exp"].includes(button.name);
+				button.type === "bracket" ||
+				["rad", "deg", "ANS", "e", "pi", "open-square-bracket", "close-square-bracket", "open-curly-braces", "close-curly-braces", "open-parenthesis", "close-parenthesis", "exp"].includes(button.name);
 
 			if (isScientific) {
 				buttonEl.classList.add("advance-key");
@@ -263,8 +264,13 @@ document.addEventListener("DOMContentLoaded", function () {
 			handleMathFunction(button);
 		} else if (button.type === "key") {
 			handleSpecialKey(button);
-				if (button.name === "clear") return;
-		} else if (button.type === "calculate") {
+			if (button.name === "clear") return;
+		} else if (button.type === "bracket") {
+			// Handle brackets consistently
+			data.operation.push(button.symbol);
+			data.formula.push(button.formula);
+		}
+		else if (button.type === "calculate") {
 			evaluateExpression();
 		}
 
@@ -282,7 +288,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		} else if (["power", "square", "cube", "quad", "x-inverse"].includes(button.name)) {
 			const powers = { square: 2, cube: 3, quad: 4, "x-inverse": -1 };
 			showPowerOnUi(data, button.formula, powers[button.name] || 0);
-		} else {
+		}
+		else if (["ceil", "floor"].includes(button.name)) {
+			data.operation.push(button.symbol);
+			data.formula.push(button.formula);
+		}
+		else {
 			data.operation.push(button.symbol + "(");
 			data.formula.push(button.formula + "(");
 		}
