@@ -53,12 +53,16 @@ document.addEventListener("DOMContentLoaded", function () {
 		{ name: "acos", symbol: "acos", formula: "inv_trigo(Math.acos,", type: "trigo_function" },
 		{ name: "asin", symbol: "asin", formula: "inv_trigo(Math.asin,", type: "trigo_function" },
 		{ name: "atan", symbol: "atan", formula: "inv_trigo(Math.atan,", type: "trigo_function" },
+		{ name: "open-square-bracket", symbol: "[", formula: "(", type: "bracket" },
+		{ name: "close-square-bracket", symbol: "]", formula: ")", type: "bracket" },
+		{ name: "open-curly-braces", symbol: "{", formula: "(", type: "bracket" },
+		{ name: "close-curly-braces", symbol: "}", formula: ")", type: "bracket" },
 
 
-		{ name: "open-square-bracket", symbol: "[", formula: "[", type: "bracket" },
-		{ name: "close-square-bracket", symbol: "]", formula: "]", type: "bracket" },
-		{ name: "open-curly-braces", symbol: "{", formula: "{", type: "bracket" },
-		{ name: "close-curly-braces", symbol: "}", formula: "}", type: "bracket" },
+		// { name: "open-square-bracket", symbol: "[", formula: "[", type: "bracket" },
+		// { name: "close-square-bracket", symbol: "]", formula: "]", type: "bracket" },
+		// { name: "open-curly-braces", symbol: "{", formula: "{", type: "bracket" },
+		// { name: "close-curly-braces", symbol: "}", formula: "}", type: "bracket" },
 		{ name: "open-parenthesis", symbol: "(", formula: "(", type: "bracket" },
 		{ name: "close-parenthesis", symbol: ")", formula: ")", type: "bracket" },
 		{ name: "power", symbol: "x<span>y</span>", formula: POWER, type: "math_function" },
@@ -249,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		// ✅ Insert multiplication if needed
 		if (isImplicitMultiplicationNeeded) {
-			data.operation.push("×");
+			// data.operation.push("×");
 			data.formula.push("*");
 		}
 
@@ -408,6 +412,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	function evaluateExpression() {
 		let formulaStr = data.formula.join("");
 		const powerResults = search(data.formula, POWER);
+	
+
+
 		const factorialResults = search(data.formula, FACTORIAL);
 
 		const bases = powerBaseGetter(data.formula, powerResults);
